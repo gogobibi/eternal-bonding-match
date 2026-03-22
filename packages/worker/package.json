@@ -1,0 +1,19 @@
+{
+  "name": "@eternal-bonding/worker",
+  "version": "0.0.1",
+  "private": true,
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "cf-typegen": "wrangler types"
+  },
+  "dependencies": {
+    "hono": "^4.7.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250319.0",
+    "typescript": "^5.8.2",
+    "wrangler": "^4.0.0"
+  }
+}

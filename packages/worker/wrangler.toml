@@ -1,0 +1,15 @@
+name = "eternal-bonding-worker"
+main = "src/index.ts"
+compatibility_date = "2025-03-22"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+ENVIRONMENT = "development"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "eternal-bonding-db"
+database_id = "TO_BE_SET_AFTER_CREATION"
+
+# Claude API Key는 wrangler secret으로 관리
+# wrangler secret put ANTHROPIC_API_KEY
