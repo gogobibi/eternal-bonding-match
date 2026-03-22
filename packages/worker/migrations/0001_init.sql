@@ -76,11 +76,12 @@ CREATE TABLE IF NOT EXISTS matches (
   analysis TEXT,
   comment TEXT,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CHECK (profile_a_id < profile_b_id),
   FOREIGN KEY (profile_a_id) REFERENCES profiles(profile_id),
   FOREIGN KEY (profile_b_id) REFERENCES profiles(profile_id)
 );
 
 -- 인덱스
 CREATE INDEX IF NOT EXISTS idx_links_profile_id ON links(profile_id);
-CREATE INDEX IF NOT EXISTS idx_matches_profile_a_id ON matches(profile_a_id);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_matches_pair ON matches(profile_a_id, profile_b_id);
 CREATE INDEX IF NOT EXISTS idx_matches_profile_b_id ON matches(profile_b_id);
