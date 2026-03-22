@@ -23,11 +23,11 @@ FF14 한국 서버 기반 영원한 서약 파트너 매칭 서비스.
 - [x] 개발 도구 설정 (Wrangler, TypeScript)
 - [x] 환경 변수 및 시크릿 관리 구조 정의 (.dev.vars.example)
 
-### 작업 2: 데이터베이스 스키마 설계 (D1 Database Schema)
-- [ ] 성향 데이터 테이블 설계 (설문 6개 섹션 기반)
-- [ ] 공유 링크 / 세션 테이블 설계
-- [ ] 매칭 결과 캐싱 테이블 설계
-- [ ] 마이그레이션 파일 작성
+### ✅ 작업 2: 데이터베이스 스키마 설계 (D1 Database Schema)
+- [x] 성향 데이터 테이블 설계 (설문 6개 섹션 기반)
+- [x] 공유 링크 / 세션 테이블 설계
+- [x] 매칭 결과 캐싱 테이블 설계
+- [x] 마이그레이션 파일 작성 → packages/worker/migrations/0001_init.sql
 
 ### 작업 3: 백엔드 API 개발 (Cloudflare Workers)
 - [ ] 성향 데이터 저장 API (POST /profiles)
