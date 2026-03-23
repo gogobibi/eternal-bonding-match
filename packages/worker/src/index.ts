@@ -1,5 +1,8 @@
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
+import { profilesRouter } from './routes/profiles'
+import { linksRouter } from './routes/links'
+import { matchRouter } from './routes/match'
 
 export type Env = {
   DB: D1Database
@@ -16,5 +19,9 @@ app.use('*', cors({
 }))
 
 app.get('/', (c) => c.json({ status: 'ok', service: 'eternal-bonding-worker' }))
+
+app.route('/profiles', profilesRouter)
+app.route('/links', linksRouter)
+app.route('/match', matchRouter)
 
 export default app
