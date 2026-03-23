@@ -18,6 +18,10 @@ matchRouter.post('/', async (c) => {
   try {
     const { link_id_a, link_id_b } = await c.req.json<CreateMatchRequest>()
 
+    if (!link_id_a || !link_id_b) {
+      return c.json({ error: 'Missing required fields: link_id_a, link_id_b' }, 400)
+    }
+
     const resultA = await resolveLink(c.env.DB, link_id_a)
     if ('error' in resultA) return c.json({ error: resultA.error }, resultA.status)
 
@@ -50,8 +54,8 @@ matchRouter.post('/', async (c) => {
 
     return c.json<CreateMatchResponse>({ match_id }, 201)
   } catch (e) {
-    const message = e instanceof Error ? e.message : 'Unknown error'
-    return c.json({ error: message }, 500)
+    console.error(e)
+    return c.json({ error: 'Internal Server Error' }, 500)
   }
 })
 
@@ -75,7 +79,7 @@ matchRouter.get('/:matchId', async (c) => {
       created_at: match.created_at,
     }, 200)
   } catch (e) {
-    const message = e instanceof Error ? e.message : 'Unknown error'
-    return c.json({ error: message }, 500)
+    console.error(e)
+    return c.json({ error: 'Internal Server Error' }, 500)
   }
 })

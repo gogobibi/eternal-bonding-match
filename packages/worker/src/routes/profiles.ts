@@ -1,18 +1,18 @@
 import { Hono } from 'hono'
 import type { Env } from '../index'
 import type { CreateProfileRequest, CreateProfileResponse } from '../types/api'
-
-const JSON_COLUMNS = [
-  'me_age', 'me_weekday', 'me_weekend', 'you_age', 'you_weekday', 'you_weekend',
-  'coupling_priority', 'me_race', 'you_race', 'my_jobs', 'my_selected', 'my_custom',
-  'you_jobs', 'you_selected', 'you_custom', 'play_styles', 'extra_items',
-] as const
+import { JSON_COLUMNS } from '../constants'
 
 export const profilesRouter = new Hono<{ Bindings: Env }>()
 
 profilesRouter.post('/', async (c) => {
   try {
     const body = await c.req.json<CreateProfileRequest>()
+
+    if (!body.nickname || !body.server) {
+      return c.json({ error: 'Missing required fields: nickname, server' }, 400)
+    }
+
     const profile_id = crypto.randomUUID()
 
     const columns = [
@@ -42,7 +42,7 @@ profilesRouter.post('/', async (c) => {
 
     return c.json<CreateProfileResponse>({ profile_id }, 201)
   } catch (e) {
-    const message = e instanceof Error ? e.message : 'Unknown error'
-    return c.json({ error: message }, 500)
+    console.error(e)
+    return c.json({ error: 'Internal Server Error' }, 500)
   }
 })

@@ -1,12 +1,7 @@
 import { Hono } from 'hono'
 import type { Env } from '../index'
 import type { CreateLinkRequest, CreateLinkResponse, GetLinkResponse, ProfileRow } from '../types/api'
-
-const JSON_COLUMNS = [
-  'me_age', 'me_weekday', 'me_weekend', 'you_age', 'you_weekday', 'you_weekend',
-  'coupling_priority', 'me_race', 'you_race', 'my_jobs', 'my_selected', 'my_custom',
-  'you_jobs', 'you_selected', 'you_custom', 'play_styles', 'extra_items',
-] as const
+import { JSON_COLUMNS } from '../constants'
 
 export const linksRouter = new Hono<{ Bindings: Env }>()
 
@@ -31,8 +26,8 @@ linksRouter.post('/', async (c) => {
 
     return c.json<CreateLinkResponse>({ link_id, expires_at }, 201)
   } catch (e) {
-    const message = e instanceof Error ? e.message : 'Unknown error'
-    return c.json({ error: message }, 500)
+    console.error(e)
+    return c.json({ error: 'Internal Server Error' }, 500)
   }
 })
 
@@ -70,10 +65,11 @@ linksRouter.get('/:linkId', async (c) => {
       link_id: link.link_id,
       profile_id: link.profile_id,
       expires_at: link.expires_at,
+      // D1's .first<T>() cannot guarantee runtime shape; JSON columns have been parsed above
       profile: profile as unknown as ProfileRow,
     }, 200)
   } catch (e) {
-    const message = e instanceof Error ? e.message : 'Unknown error'
-    return c.json({ error: message }, 500)
+    console.error(e)
+    return c.json({ error: 'Internal Server Error' }, 500)
   }
 })
