@@ -12,9 +12,7 @@ export type RaceType =
   | '루가딘'
   | '아우라'
   | '흐로스가르'
-  | '비에라'
-  | '가가'
-  | '팝';
+  | '비에라';
 
 export type JobType =
   // Tank
@@ -45,13 +43,7 @@ export type JobType =
 
 // ── JSON column item types ──
 
-export interface CustomKeywordItem {
-  id: string;
-  text: string;
-  emphasized: boolean;
-}
-
-export interface PlayStyleItem {
+export interface KeywordItem {
   id: string;
   text: string;
   emphasized: boolean;
@@ -80,16 +72,16 @@ export interface ProfileRow {
   you_race: RaceType[];
   my_jobs: JobType[];
   my_selected: string[];
-  my_custom: CustomKeywordItem[];
+  my_custom: KeywordItem[];
   you_contents_enabled: number;
   you_jobs: JobType[];
   you_selected: string[];
-  you_custom: CustomKeywordItem[];
-  play_styles: PlayStyleItem[];
+  you_custom: KeywordItem[];
+  play_styles: KeywordItem[];
   server_move: 'O' | 'X' | '△';
   server_cross: 'O' | 'X' | '△';
   covenant_plan: '스탠다드' | '골드' | '플래티넘' | '무관';
-  extra_items: PlayStyleItem[];
+  extra_items: KeywordItem[];
   created_at: string;
 }
 

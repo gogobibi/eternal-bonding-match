@@ -1,4 +1,5 @@
-import type { ProfileInput, JobType, CustomKeywordItem } from '../../types/api'
+import type { ProfileInput, JobType, KeywordItem } from '../../types/api'
+import EditableKeywordList from './EditableKeywordList'
 
 const JOB_GROUPS: { label: string; jobs: JobType[] }[] = [
   { label: '탱커', jobs: ['나이트', '전사', '암흑기사', '건브레이커'] },
@@ -28,31 +29,6 @@ function JobSelect({ label, jobs, selected, onToggle }: {
   )
 }
 
-function CustomKeywords({ items, onChange }: { items: CustomKeywordItem[]; onChange: (items: CustomKeywordItem[]) => void }) {
-  const add = () => onChange([...items, { id: crypto.randomUUID(), text: '', emphasized: false }])
-  const remove = (id: string) => onChange(items.filter(i => i.id !== id))
-  const update = (id: string, patch: Partial<CustomKeywordItem>) => onChange(items.map(i => i.id === id ? { ...i, ...patch } : i))
-
-  return (
-    <div className="space-y-2">
-      {items.map(item => (
-        <div key={item.id} className="flex gap-2 items-center">
-          <input type="text" value={item.text} onChange={e => update(item.id, { text: e.target.value })} placeholder="키워드 입력"
-            className="flex-1 px-3 py-2 rounded bg-[var(--color-navy-light)] border border-[var(--color-gold)]/40 focus:border-[var(--color-gold)] outline-none text-sm" />
-          <button type="button" onClick={() => update(item.id, { emphasized: !item.emphasized })}
-            className={`px-2 py-1 text-lg ${item.emphasized ? 'text-[var(--color-gold)]' : 'text-slate-500'}`}>
-            &#9733;
-          </button>
-          <button type="button" onClick={() => remove(item.id)} className="text-red-400 hover:text-red-300 px-2">&#10005;</button>
-        </div>
-      ))}
-      <button type="button" onClick={add} className="px-4 py-2 text-sm rounded border border-dashed border-[var(--color-gold)]/40 hover:border-[var(--color-gold)] transition-colors">
-        + 추가
-      </button>
-    </div>
-  )
-}
-
 function ContentBlock({ prefix, data, onChange }: {
   prefix: 'my' | 'you'
   data: ProfileInput
@@ -63,7 +39,7 @@ function ContentBlock({ prefix, data, onChange }: {
   const customKey = `${prefix}_custom` as 'my_custom' | 'you_custom'
   const jobs = (data[jobsKey] ?? []) as JobType[]
   const selected = (data[selectedKey] ?? []) as string[]
-  const custom = (data[customKey] ?? []) as CustomKeywordItem[]
+  const custom = (data[customKey] ?? []) as KeywordItem[]
 
   const toggleJob = (job: JobType) => {
     onChange({ [jobsKey]: jobs.includes(job) ? jobs.filter(j => j !== job) : [...jobs, job] })
@@ -95,7 +71,7 @@ function ContentBlock({ prefix, data, onChange }: {
 
       <div className="space-y-2">
         <span className="text-[var(--color-gold)] font-semibold">커스텀 키워드</span>
-        <CustomKeywords items={custom} onChange={items => onChange({ [customKey]: items })} />
+        <EditableKeywordList items={custom} onChange={items => onChange({ [customKey]: items })} />
       </div>
     </div>
   )

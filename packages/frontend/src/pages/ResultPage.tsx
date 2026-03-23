@@ -3,6 +3,8 @@ import { useParams } from 'react-router-dom'
 import { getMatch } from '../api/client'
 import type { GetMatchResponse } from '../types/api'
 
+const POLLING_INTERVAL_MS = 3000
+
 export default function ResultPage() {
   const { matchId } = useParams<{ matchId: string }>()
   const [result, setResult] = useState<GetMatchResponse | null>(null)
@@ -18,7 +20,7 @@ export default function ResultPage() {
         if (!active) return
         setResult(data)
         if (data.analysis === 'pending') {
-          setTimeout(poll, 3000)
+          setTimeout(poll, POLLING_INTERVAL_MS)
         }
       } catch (e) {
         if (active) setError(e instanceof Error ? e.message : '오류가 발생했습니다')

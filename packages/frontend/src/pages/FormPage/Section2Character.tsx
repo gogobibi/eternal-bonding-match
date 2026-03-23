@@ -2,7 +2,7 @@ import type { ProfileInput, CouplingType, RaceType } from '../../types/api'
 
 const COUPLING_TYPES: CouplingType[] = ['BL', 'GL', 'HL']
 const PRIORITIES = ['선택', '1순위', '2순위', '3순위'] as const
-const RACES: RaceType[] = ['휴란', '엘레젠', '라라펠', '미코테', '루가딘', '아우라', '흐로스가르', '비에라', '가가', '팝']
+const RACES: RaceType[] = ['휴란', '엘레젠', '라라펠', '미코테', '루가딘', '아우라', '흐로스가르', '비에라']
 
 function getPriority(coupling: CouplingType, priorities: CouplingType[][]): number {
   for (let i = 0; i < priorities.length; i++) {

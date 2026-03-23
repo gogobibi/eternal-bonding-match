@@ -34,16 +34,10 @@ export default function FormPage() {
     }
   }
 
+  const SECTIONS = [Section1Basic, Section2Character, Section3Content, Section4PlayStyle, Section5ServerPlan, Section6Extra]
   const renderSection = () => {
-    const props = { data, onChange }
-    switch (step) {
-      case 1: return <Section1Basic {...props} />
-      case 2: return <Section2Character {...props} />
-      case 3: return <Section3Content {...props} />
-      case 4: return <Section4PlayStyle {...props} />
-      case 5: return <Section5ServerPlan {...props} />
-      case 6: return <Section6Extra {...props} />
-    }
+    const Section = SECTIONS[step - 1]
+    return Section ? <Section data={data} onChange={onChange} /> : null
   }
 
   return (
@@ -52,7 +46,7 @@ export default function FormPage() {
         <h1 className="text-2xl font-bold text-[var(--color-gold)] text-center">프로필 작성</h1>
 
         <div className="flex items-center justify-center gap-2">
-          {SECTION_TITLES.map((title, i) => (
+          {SECTION_TITLES.map((_title, i) => (
             <div key={i} className="flex items-center gap-2">
               <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium border ${i + 1 === step ? 'bg-[var(--color-gold)] text-[var(--color-navy)] border-[var(--color-gold)]' : i + 1 < step ? 'border-[var(--color-gold)] text-[var(--color-gold)]' : 'border-slate-600 text-slate-500'}`}>
                 {i + 1}
