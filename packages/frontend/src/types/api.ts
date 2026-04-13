@@ -123,7 +123,7 @@ export interface CreateMatchResponse {
 export interface GetMatchResponse {
   match_id: string;
   score: number;
-  analysis: string;
-  comment: string;
+  analysis: string | null;
+  comment: string | null;
   created_at: string;
 }

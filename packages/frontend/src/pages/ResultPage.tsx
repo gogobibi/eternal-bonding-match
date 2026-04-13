@@ -67,10 +67,12 @@ export default function ResultPage() {
             <div className={`h-3 rounded-full transition-all duration-500 ${barColor}`} style={{ width: `${score}%` }} />
           </div>
           <div className="space-y-3">
-            <div>
-              <h3 className="text-[var(--color-gold)] font-semibold mb-1">분석</h3>
-              <p className="text-slate-300 text-sm whitespace-pre-wrap">{result.analysis}</p>
-            </div>
+            {result.analysis && (
+              <div>
+                <h3 className="text-[var(--color-gold)] font-semibold mb-1">분석</h3>
+                <p className="text-slate-300 text-sm whitespace-pre-wrap">{result.analysis}</p>
+              </div>
+            )}
             {result.comment && (
               <div>
                 <h3 className="text-[var(--color-gold)] font-semibold mb-1">코멘트</h3>
