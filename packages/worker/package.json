@@ -10,6 +10,7 @@
     "db:migrate:local": "wrangler d1 migrations apply eternal-bonding-db --local"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.89.0",
     "hono": "^4.7.0"
   },
   "devDependencies": {

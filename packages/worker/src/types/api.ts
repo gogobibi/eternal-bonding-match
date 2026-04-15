@@ -86,6 +86,14 @@ export function parseJsonColumns(row: ProfileRow): Record<string, unknown> {
   return result;
 }
 
+// ── AI Matching ──
+
+export interface MatchResult {
+  score: number;
+  analysis: string;
+  comment: string;
+}
+
 // ── Request / Response types ──
 
 export type CreateProfileRequest = Record<string, unknown>;
