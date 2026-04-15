@@ -6,3 +6,5 @@ dist/
 .env.local
 *.d.ts
 .claude/
+test-results/
+playwright-report/
