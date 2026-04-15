@@ -1,12 +1,18 @@
 import { Hono } from 'hono'
 import type { Env } from '../index'
-import { JSON_COLUMNS, parseJsonColumns, type ProfileRow } from '../types/api'
+import { JSON_COLUMNS } from '../constants'
+import { parseJsonColumns, type ProfileRow, type CreateProfileRequest, type CreateProfileResponse } from '../types/api'
 
-const profiles = new Hono<{ Bindings: Env }>()
+export const profilesRouter = new Hono<{ Bindings: Env }>()
 
-profiles.post('/', async (c) => {
+profilesRouter.post('/', async (c) => {
   try {
-    const body = await c.req.json<Record<string, unknown>>()
+    const body = await c.req.json<CreateProfileRequest>()
+
+    if (!body.nickname || !body.server) {
+      return c.json({ error: 'Missing required fields: nickname, server' }, 400)
+    }
+
     const profileId = crypto.randomUUID()
 
     const columns = [
@@ -17,16 +23,14 @@ profiles.post('/', async (c) => {
       'coupling_priority', 'me_race', 'you_race',
       'my_jobs', 'my_selected', 'my_custom',
       'you_contents_enabled', 'you_jobs', 'you_selected', 'you_custom',
-      'play_styles',
-      'server_move', 'server_cross', 'covenant_plan',
-      'extra_items',
+      'play_styles', 'server_move', 'server_cross', 'covenant_plan', 'extra_items',
     ]
 
-    const values: unknown[] = columns.map((col) => {
+    const values = columns.map((col) => {
       if (col === 'profile_id') return profileId
       const val = body[col]
       if (val === undefined || val === null) return null
-      if (JSON_COLUMNS.includes(col as keyof ProfileRow) && typeof val !== 'string') {
+      if ((JSON_COLUMNS as readonly string[]).includes(col) && typeof val !== 'string') {
         return JSON.stringify(val)
       }
       return val
@@ -37,14 +41,14 @@ profiles.post('/', async (c) => {
 
     await c.env.DB.prepare(sql).bind(...values).run()
 
-    return c.json({ profile_id: profileId }, 201)
+    return c.json<CreateProfileResponse>({ profile_id: profileId }, 201)
   } catch (e) {
-    const message = e instanceof Error ? e.message : 'Unknown error'
-    return c.json({ error: message }, 500)
+    console.error(e)
+    return c.json({ error: 'Internal Server Error' }, 500)
   }
 })
 
-profiles.get('/:profileId', async (c) => {
+profilesRouter.get('/:profileId', async (c) => {
   try {
     const profileId = c.req.param('profileId')
     const row = await c.env.DB.prepare('SELECT * FROM profiles WHERE profile_id = ?')
@@ -55,9 +59,7 @@ profiles.get('/:profileId', async (c) => {
 
     return c.json(parseJsonColumns(row))
   } catch (e) {
-    const message = e instanceof Error ? e.message : 'Unknown error'
-    return c.json({ error: message }, 500)
+    console.error(e)
+    return c.json({ error: 'Internal Server Error' }, 500)
   }
 })
-
-export default profiles
