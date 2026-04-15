@@ -60,15 +60,9 @@ matchRouter.post('/', async (c) => {
     const parsedA = parseJsonColumns(profileA)
     const parsedB = parseJsonColumns(profileB)
 
-    let score = 0
-    let analysis = '분석에 실패했습니다. 다시 시도해주세요.'
-    let comment = '오류 발생'
-
+    let matchResult = { score: 0, analysis: '분석에 실패했습니다. 다시 시도해주세요.', comment: '오류 발생' }
     try {
-      const result = await analyzeMatch(parsedA, parsedB, c.env.ANTHROPIC_API_KEY)
-      score = result.score
-      analysis = result.analysis
-      comment = result.comment
+      matchResult = await analyzeMatch(parsedA, parsedB, c.env.ANTHROPIC_API_KEY)
     } catch (e) {
       console.error('AI matching failed:', e)
     }
@@ -77,7 +71,7 @@ matchRouter.post('/', async (c) => {
 
     await c.env.DB.prepare(
       'INSERT INTO matches (match_id, profile_a_id, profile_b_id, score, analysis, comment) VALUES (?, ?, ?, ?, ?, ?)'
-    ).bind(matchId, profileAId, profileBId, score, analysis, comment).run()
+    ).bind(matchId, profileAId, profileBId, matchResult.score, matchResult.analysis, matchResult.comment).run()
 
     return c.json<CreateMatchResponse>({ match_id: matchId }, 201)
   } catch (e) {
