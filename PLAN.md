@@ -36,10 +36,10 @@ FF14 한국 서버 기반 영원한 서약 파트너 매칭 서비스.
 - [x] 매칭 요청 API (POST /match)
 - [x] 매칭 결과 조회 API (GET /match/:matchId)
 
-### 작업 4: AI 매칭 에이전트 개발 (Claude API Integration)
-- [ ] Cloudflare Workers에서 Claude API 호출 구현
-- [ ] 매칭률 계산 프롬프트 설계
-- [ ] 매칭 결과 구조화 (점수, 항목별 분석, 코멘트)
+### ✅ 작업 4: AI 매칭 에이전트 개발 (Claude API Integration)
+- [x] Cloudflare Workers에서 Claude API 호출 구현
+- [x] 매칭률 계산 프롬프트 설계
+- [x] 매칭 결과 구조화 (점수, 항목별 분석, 코멘트)
 
 ### ✅ 작업 5: 프론트엔드 개발 (Cloudflare Pages)
 - [x] 성향 입력 폼 구현 (6개 섹션, eternal-bonding-sheet 기반)
