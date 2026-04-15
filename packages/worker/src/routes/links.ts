@@ -1,10 +1,10 @@
 import { Hono } from 'hono'
 import type { Env } from '../index'
-import { parseJsonColumns, type ProfileRow, type LinkRow, type CreateLinkRequest } from '../types/api'
+import { parseJsonColumns, type ProfileRow, type LinkRow, type CreateLinkRequest, type CreateLinkResponse, type GetLinkResponse } from '../types/api'
 
-const links = new Hono<{ Bindings: Env }>()
+export const linksRouter = new Hono<{ Bindings: Env }>()
 
-links.post('/', async (c) => {
+linksRouter.post('/', async (c) => {
   try {
     const { profile_id } = await c.req.json<CreateLinkRequest>()
     if (!profile_id) return c.json({ error: 'profile_id is required' }, 400)
@@ -21,14 +21,14 @@ links.post('/', async (c) => {
       .bind(linkId, profile_id, expiresAt)
       .run()
 
-    return c.json({ link_id: linkId, expires_at: expiresAt }, 201)
+    return c.json<CreateLinkResponse>({ link_id: linkId, expires_at: expiresAt }, 201)
   } catch (e) {
-    const message = e instanceof Error ? e.message : 'Unknown error'
-    return c.json({ error: message }, 500)
+    console.error(e)
+    return c.json({ error: 'Internal Server Error' }, 500)
   }
 })
 
-links.get('/:linkId', async (c) => {
+linksRouter.get('/:linkId', async (c) => {
   try {
     const linkId = c.req.param('linkId')
     const link = await c.env.DB.prepare('SELECT * FROM links WHERE link_id = ?')
@@ -47,16 +47,14 @@ links.get('/:linkId', async (c) => {
 
     if (!profile) return c.json({ error: 'Associated profile not found' }, 404)
 
-    return c.json({
+    return c.json<GetLinkResponse>({
       link_id: link.link_id,
       profile_id: link.profile_id,
       expires_at: link.expires_at,
       profile: parseJsonColumns(profile),
     })
   } catch (e) {
-    const message = e instanceof Error ? e.message : 'Unknown error'
-    return c.json({ error: message }, 500)
+    console.error(e)
+    return c.json({ error: 'Internal Server Error' }, 500)
   }
 })
-
-export default links

@@ -26,7 +26,7 @@ export interface ProfileRow {
   server: ServerType | null;
   me_gender: string | null;
   me_gender_custom: string | null;
-  me_age: string | null;        // JSON text in D1
+  me_age: string | null;
   me_weekday: string | null;
   me_weekend: string | null;
   you_gender: string | null;
@@ -71,16 +71,9 @@ export interface MatchRow {
   created_at: string;
 }
 
-// ── JSON columns that need parse/stringify ──
+// ── JSON column parsing ──
 
-export const JSON_COLUMNS: (keyof ProfileRow)[] = [
-  'me_age', 'me_weekday', 'me_weekend',
-  'you_age', 'you_weekday', 'you_weekend',
-  'coupling_priority', 'me_race', 'you_race',
-  'my_jobs', 'my_selected', 'my_custom',
-  'you_jobs', 'you_selected', 'you_custom',
-  'play_styles', 'extra_items',
-];
+import { JSON_COLUMNS } from '../constants'
 
 export function parseJsonColumns(row: ProfileRow): Record<string, unknown> {
   const result: Record<string, unknown> = { ...row };
@@ -95,15 +88,41 @@ export function parseJsonColumns(row: ProfileRow): Record<string, unknown> {
 
 // ── Request / Response types ──
 
-export interface CreateProfileRequest {
-  [key: string]: unknown;
+export type CreateProfileRequest = Record<string, unknown>;
+
+export interface CreateProfileResponse {
+  profile_id: string;
 }
 
 export interface CreateLinkRequest {
   profile_id: string;
 }
 
+export interface CreateLinkResponse {
+  link_id: string;
+  expires_at: string;
+}
+
+export interface GetLinkResponse {
+  link_id: string;
+  profile_id: string;
+  expires_at: string;
+  profile: Record<string, unknown>;
+}
+
 export interface CreateMatchRequest {
   link_id_a: string;
   link_id_b: string;
+}
+
+export interface CreateMatchResponse {
+  match_id: string;
+}
+
+export interface GetMatchResponse {
+  match_id: string;
+  score: number;
+  analysis: string | null;
+  comment: string | null;
+  created_at: string;
 }
