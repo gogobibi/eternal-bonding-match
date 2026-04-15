@@ -1,6 +1,8 @@
 import { Hono } from 'hono'
 import type { Env } from '../index'
-import type { LinkRow, CreateMatchRequest, CreateMatchResponse, GetMatchResponse, MatchRow } from '../types/api'
+import type { LinkRow, ProfileRow, CreateMatchRequest, CreateMatchResponse, GetMatchResponse, MatchRow } from '../types/api'
+import { parseJsonColumns } from '../types/api'
+import { analyzeMatch } from '../services/matching'
 
 export const matchRouter = new Hono<{ Bindings: Env }>()
 
@@ -44,11 +46,32 @@ matchRouter.post('/', async (c) => {
       return c.json<CreateMatchResponse>({ match_id: existing.match_id })
     }
 
+    const [profileA, profileB] = await Promise.all([
+      c.env.DB.prepare('SELECT * FROM profiles WHERE profile_id = ?')
+        .bind(profileAId).first<ProfileRow>(),
+      c.env.DB.prepare('SELECT * FROM profiles WHERE profile_id = ?')
+        .bind(profileBId).first<ProfileRow>(),
+    ])
+
+    if (!profileA || !profileB) {
+      return c.json({ error: 'Profile not found' }, 404)
+    }
+
+    const parsedA = parseJsonColumns(profileA)
+    const parsedB = parseJsonColumns(profileB)
+
+    let matchResult = { score: 0, analysis: '분석에 실패했습니다. 다시 시도해주세요.', comment: '오류 발생' }
+    try {
+      matchResult = await analyzeMatch(parsedA, parsedB, c.env.ANTHROPIC_API_KEY)
+    } catch (e) {
+      console.error('AI matching failed:', e)
+    }
+
     const matchId = crypto.randomUUID()
 
     await c.env.DB.prepare(
       'INSERT INTO matches (match_id, profile_a_id, profile_b_id, score, analysis, comment) VALUES (?, ?, ?, ?, ?, ?)'
-    ).bind(matchId, profileAId, profileBId, 0, 'pending', 'pending').run()
+    ).bind(matchId, profileAId, profileBId, matchResult.score, matchResult.analysis, matchResult.comment).run()
 
     return c.json<CreateMatchResponse>({ match_id: matchId }, 201)
   } catch (e) {
