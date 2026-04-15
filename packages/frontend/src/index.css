@@ -1,0 +1,14 @@
+@import "tailwindcss";
+
+:root {
+  --color-navy: #0f172a;
+  --color-navy-light: #1e293b;
+  --color-gold: #d4af37;
+  --color-gold-light: #f0d060;
+}
+
+body {
+  background-color: #0f172a;
+  color: #f1f5f9;
+  font-family: 'Noto Sans KR', sans-serif;
+}
