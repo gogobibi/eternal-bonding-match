@@ -126,4 +126,8 @@ export interface GetMatchResponse {
   analysis: string | null;
   comment: string | null;
   created_at: string;
+  profile_a_nickname?: string | null;
+  profile_a_server?: ServerType | null;
+  profile_b_nickname?: string | null;
+  profile_b_server?: ServerType | null;
 }

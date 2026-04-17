@@ -81,11 +81,27 @@ matchRouter.post('/', async (c) => {
   }
 })
 
+interface MatchWithProfilesRow extends MatchRow {
+  profile_a_nickname: string | null
+  profile_a_server: string | null
+  profile_b_nickname: string | null
+  profile_b_server: string | null
+}
+
 matchRouter.get('/:matchId', async (c) => {
   try {
     const matchId = c.req.param('matchId')
-    const row = await c.env.DB.prepare('SELECT * FROM matches WHERE match_id = ?')
-      .bind(matchId).first<MatchRow>()
+    const row = await c.env.DB.prepare(
+      `SELECT m.*,
+              pa.nickname AS profile_a_nickname,
+              pa.server   AS profile_a_server,
+              pb.nickname AS profile_b_nickname,
+              pb.server   AS profile_b_server
+       FROM matches m
+       LEFT JOIN profiles pa ON m.profile_a_id = pa.profile_id
+       LEFT JOIN profiles pb ON m.profile_b_id = pb.profile_id
+       WHERE m.match_id = ?`
+    ).bind(matchId).first<MatchWithProfilesRow>()
 
     if (!row) return c.json({ error: 'Match not found' }, 404)
 
@@ -95,6 +111,10 @@ matchRouter.get('/:matchId', async (c) => {
       analysis: row.analysis,
       comment: row.comment,
       created_at: row.created_at,
+      profile_a_nickname: row.profile_a_nickname,
+      profile_a_server: row.profile_a_server as GetMatchResponse['profile_a_server'],
+      profile_b_nickname: row.profile_b_nickname,
+      profile_b_server: row.profile_b_server as GetMatchResponse['profile_b_server'],
     })
   } catch (e) {
     console.error(e)
