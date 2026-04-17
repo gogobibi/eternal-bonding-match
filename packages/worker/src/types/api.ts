@@ -67,6 +67,8 @@ export interface LinkRow {
   profile_id: string;
   created_at: string;
   expires_at: string;
+  password_hash: string | null;
+  password_salt: string | null;
 }
 
 export interface MatchRow {
@@ -112,6 +114,7 @@ export interface CreateProfileResponse {
 
 export interface CreateLinkRequest {
   profile_id: string;
+  password?: string;
 }
 
 export interface CreateLinkResponse {
