@@ -10,14 +10,14 @@ export default function SectionCard({ section, index }: Props) {
   const icon = getSectionIcon(section.title)
   const badge =
     section.passed === true
-      ? { text: '✓', className: 'bg-emerald-500/15 text-emerald-300 border-emerald-400/40' }
+      ? { text: '✓', className: 'bg-emerald-50 text-emerald-600 border-emerald-200' }
       : section.passed === false
-        ? { text: '✗', className: 'bg-rose-500/15 text-rose-300 border-rose-400/40' }
+        ? { text: '✗', className: 'bg-rose-50 text-rose-600 border-rose-200' }
         : null
 
   return (
     <div
-      className="group bg-[var(--color-navy-light)] border border-[var(--color-gold)]/20 rounded-xl p-5 transition-all duration-300 hover:border-[var(--color-gold)]/50 hover:-translate-y-0.5"
+      className="group bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl p-5 shadow-sm transition-all duration-300 hover:border-[var(--color-primary)]/50 hover:-translate-y-0.5"
       style={{
         animation: `fadeSlideUp 0.5s ease-out ${index * 0.08}s backwards`,
       }}
@@ -37,7 +37,7 @@ export default function SectionCard({ section, index }: Props) {
               </span>
             )}
           </div>
-          <p className="text-slate-300 text-sm leading-relaxed whitespace-pre-wrap">{section.body}</p>
+          <p className="text-slate-700 text-sm leading-relaxed whitespace-pre-wrap">{section.body}</p>
         </div>
       </div>
     </div>

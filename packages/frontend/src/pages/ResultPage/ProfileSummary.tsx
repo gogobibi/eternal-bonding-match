@@ -7,9 +7,9 @@ interface Props {
 
 function ProfileCard({ nickname, server }: { nickname?: string | null; server?: string | null }) {
   return (
-    <div className="flex-1 bg-[var(--color-navy-light)] border border-[var(--color-gold)]/20 rounded-lg px-4 py-3 text-center">
+    <div className="flex-1 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg px-4 py-3 text-center shadow-sm">
       <p className="text-[var(--color-gold)] font-semibold truncate">{nickname ?? '익명'}</p>
-      {server && <p className="text-slate-400 text-xs mt-1 tracking-wider">{server}</p>}
+      {server && <p className="text-slate-500 text-xs mt-1 tracking-wider">{server}</p>}
     </div>
   )
 }

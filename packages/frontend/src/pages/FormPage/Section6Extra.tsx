@@ -1,15 +1,24 @@
-import type { ProfileInput } from '../../types/api'
+import SectionCard from '../../components/form/SectionCard'
 import EditableKeywordList from './EditableKeywordList'
+import type { ProfileInput } from '../../types/api'
 
-export default function Section6Extra({ data, onChange }: { data: ProfileInput; onChange: (u: Partial<ProfileInput>) => void }) {
+export default function Section6Extra({
+  data, onChange,
+}: {
+  data: ProfileInput
+  onChange: (u: Partial<ProfileInput>) => void
+}) {
   return (
-    <div className="space-y-4">
-      <h3 className="text-[var(--color-gold)] font-semibold">기타 하고 싶은 말</h3>
+    <SectionCard
+      id="extra"
+      title="그 외"
+      description="자유롭게 하고 싶은 말을 적어주세요"
+    >
       <EditableKeywordList
         items={data.extra_items ?? []}
         onChange={items => onChange({ extra_items: items })}
-        placeholder="자유롭게 입력해 주세요"
+        placeholder="예: 보이스챗 환영, 초보자 환영..."
       />
-    </div>
+    </SectionCard>
   )
 }

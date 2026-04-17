@@ -23,10 +23,10 @@ export default function EditableKeywordList({ items, onChange, placeholder }: {
             className={`px-2 py-1 text-lg ${item.emphasized ? 'text-[var(--color-gold)]' : 'text-slate-500'}`}>
             &#9733;
           </button>
-          <button type="button" onClick={() => remove(item.id)} className="text-red-400 hover:text-red-300 px-2">&#10005;</button>
+          <button type="button" onClick={() => remove(item.id)} className="text-red-500 hover:text-red-600 px-2">&#10005;</button>
         </div>
       ))}
-      <button type="button" onClick={add} className="px-4 py-2 text-sm rounded border border-dashed border-[var(--color-gold)]/40 hover:border-[var(--color-gold)] transition-colors">
+      <button type="button" onClick={add} className="px-4 py-1.5 text-sm rounded-md border border-dashed border-[var(--color-gold)]/40 hover:border-[var(--color-gold)] transition-colors">
         + 추가
       </button>
     </div>

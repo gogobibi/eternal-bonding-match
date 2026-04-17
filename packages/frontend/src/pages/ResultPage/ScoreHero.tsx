@@ -22,7 +22,8 @@ export default function ScoreHero({ score, comment }: Props) {
   const offset = CIRCUMFERENCE - (animatedScore / 100) * CIRCUMFERENCE
 
   return (
-    <div className="flex flex-col items-center gap-4">
+    <div className="flex flex-col items-center gap-4 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl py-8 px-6 shadow-sm">
+      <p className="text-slate-500 text-xs tracking-[0.3em] uppercase">Compatibility Score</p>
       <div className="relative" style={{ filter: `drop-shadow(${tier.glow})` }}>
         <svg width={220} height={220} viewBox="0 0 220 220" className="-rotate-90">
           <circle
@@ -32,7 +33,7 @@ export default function ScoreHero({ score, comment }: Props) {
             fill="none"
             stroke="currentColor"
             strokeWidth={STROKE}
-            className="text-slate-700/60"
+            className="text-slate-200"
           />
           <circle
             cx={110}
@@ -49,7 +50,7 @@ export default function ScoreHero({ score, comment }: Props) {
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           <span className={`text-6xl font-bold tabular-nums ${tier.color}`}>{Math.round(animatedScore)}</span>
-          <span className="text-slate-400 text-xs tracking-widest mt-1">/ 100</span>
+          <span className="text-slate-500 text-xs tracking-widest mt-1">/ 100</span>
         </div>
       </div>
 
@@ -58,12 +59,12 @@ export default function ScoreHero({ score, comment }: Props) {
           style={{ textShadow: tier.glow }}>
           {tier.label}
         </p>
-        <p className="text-slate-400 text-sm">{tier.sublabel}</p>
+        <p className="text-slate-500 text-sm">{tier.sublabel}</p>
       </div>
 
       {comment && (
-        <div className="mt-2 max-w-md px-5 py-3 rounded-full bg-[var(--color-navy-light)] border border-[var(--color-gold)]/30">
-          <p className="text-slate-200 text-sm text-center italic">&ldquo;{comment}&rdquo;</p>
+        <div className="w-full max-w-md mt-2 px-5 py-3 rounded-md bg-[var(--color-primary-softer)] border border-[var(--color-primary-soft)]">
+          <p className="text-slate-700 text-sm text-center italic">&ldquo;{comment}&rdquo;</p>
         </div>
       )}
     </div>

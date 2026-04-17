@@ -1,35 +1,30 @@
-import type { ProfileInput, JobType, KeywordItem } from '../../types/api'
+import SectionCard from '../../components/form/SectionCard'
+import Field from '../../components/form/Field'
 import EditableKeywordList from './EditableKeywordList'
+import { JOB_GROUPS, CONTENT_GROUPS, type JobType } from '../../constants/options'
+import type { ProfileInput, KeywordItem } from '../../types/api'
 
-const JOB_GROUPS: { label: string; jobs: JobType[] }[] = [
-  { label: '탱커', jobs: ['나이트', '전사', '암흑기사', '건브레이커'] },
-  { label: '힐러', jobs: ['백마도사', '학자', '점성술사', '현자'] },
-  { label: '근딜', jobs: ['몽크', '용기사', '닌자', '사무라이', '파무어'] },
-  { label: '원딜', jobs: ['음유시인', '기공사', '무도가'] },
-  { label: '마법딜', jobs: ['흑마도사', '소환사', '적마도사', '픽토맨서'] },
-]
-
-const CONTENT_PRESETS = ['일반 던전', '극만신', '영웅 레이드', '절만신', '골드소서', '하우징', '패션체크', '낚시', '수집', 'RP', '데이트', '잡담/친목']
-
-function JobSelect({ label, jobs, selected, onToggle }: {
-  label: string; jobs: JobType[]; selected: JobType[]; onToggle: (j: JobType) => void
-}) {
+function Chip({
+  label, on, onClick,
+}: { label: string; on: boolean; onClick: () => void }) {
   return (
-    <div className="space-y-1">
-      <span className="text-sm text-slate-400">{label}</span>
-      <div className="flex flex-wrap gap-1">
-        {jobs.map(job => (
-          <button key={job} type="button" onClick={() => onToggle(job)}
-            className={`px-3 py-1 text-sm rounded border transition-colors ${selected.includes(job) ? 'bg-[var(--color-gold)] text-[var(--color-navy)] border-[var(--color-gold)]' : 'border-[var(--color-gold)]/40 hover:border-[var(--color-gold)]'}`}>
-            {job}
-          </button>
-        ))}
-      </div>
-    </div>
+    <button
+      type="button"
+      onClick={onClick}
+      className={`px-3 py-1 text-xs rounded-md border transition-colors ${
+        on
+          ? 'bg-[var(--color-gold)] text-[var(--color-navy)] border-[var(--color-gold)]'
+          : 'border-[var(--color-border-strong)] text-slate-700 hover:border-[var(--color-primary)] hover:text-[var(--color-primary)]'
+      }`}
+    >
+      {label}
+    </button>
   )
 }
 
-function ContentBlock({ prefix, data, onChange }: {
+function ContentBlock({
+  prefix, data, onChange,
+}: {
   prefix: 'my' | 'you'
   data: ProfileInput
   onChange: (u: Partial<ProfileInput>) => void
@@ -49,51 +44,79 @@ function ContentBlock({ prefix, data, onChange }: {
   }
 
   return (
-    <div className="space-y-4">
-      <fieldset className="space-y-2">
-        <legend className="text-[var(--color-gold)] font-semibold">{prefix === 'my' ? '내 직업군' : '상대 직업군'}</legend>
-        {JOB_GROUPS.map(g => (
-          <JobSelect key={g.label} label={g.label} jobs={g.jobs} selected={jobs} onToggle={toggleJob} />
-        ))}
-      </fieldset>
-
-      <fieldset className="space-y-2">
-        <legend className="text-[var(--color-gold)] font-semibold">{prefix === 'my' ? '즐기는 콘텐츠' : '상대가 즐겼으면 하는 콘텐츠'}</legend>
-        <div className="flex flex-wrap gap-2">
-          {CONTENT_PRESETS.map(p => (
-            <button key={p} type="button" onClick={() => togglePreset(p)}
-              className={`px-3 py-1 text-sm rounded border transition-colors ${selected.includes(p) ? 'bg-[var(--color-gold)] text-[var(--color-navy)] border-[var(--color-gold)]' : 'border-[var(--color-gold)]/40 hover:border-[var(--color-gold)]'}`}>
-              {p}
-            </button>
+    <div className="space-y-5">
+      <Field label={prefix === 'my' ? 'ME · 주 직업' : 'YOU · 선호 직업'}>
+        <div className="space-y-3">
+          {(Object.entries(JOB_GROUPS) as [string, readonly string[]][]).map(([group, list]) => (
+            <div key={group} className="space-y-1.5">
+              <span className="text-slate-500 text-xs tracking-wider uppercase">{group}</span>
+              <div className="flex flex-wrap gap-1.5">
+                {list.map(job => (
+                  <Chip
+                    key={job}
+                    label={job}
+                    on={jobs.includes(job as JobType)}
+                    onClick={() => toggleJob(job as JobType)}
+                  />
+                ))}
+              </div>
+            </div>
           ))}
         </div>
-      </fieldset>
+      </Field>
 
-      <div className="space-y-2">
-        <span className="text-[var(--color-gold)] font-semibold">커스텀 키워드</span>
+      <Field label={prefix === 'my' ? 'ME · 즐기는 컨텐츠' : 'YOU · 함께 즐기고 싶은 컨텐츠'}>
+        <div className="space-y-3">
+          {(Object.entries(CONTENT_GROUPS) as [string, readonly string[]][]).map(([group, list]) => (
+            <div key={group} className="space-y-1.5">
+              <span className="text-slate-500 text-xs tracking-wider uppercase">{group}</span>
+              <div className="flex flex-wrap gap-1.5">
+                {list.map(item => (
+                  <Chip
+                    key={item}
+                    label={item}
+                    on={selected.includes(item)}
+                    onClick={() => togglePreset(item)}
+                  />
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </Field>
+
+      <Field label="키워드 추가" hint="프리셋에 없는 컨텐츠를 자유롭게 입력">
         <EditableKeywordList items={custom} onChange={items => onChange({ [customKey]: items })} />
-      </div>
+      </Field>
     </div>
   )
 }
 
-export default function Section3Content({ data, onChange }: { data: ProfileInput; onChange: (u: Partial<ProfileInput>) => void }) {
+export default function Section3Content({
+  data, onChange,
+}: {
+  data: ProfileInput
+  onChange: (u: Partial<ProfileInput>) => void
+}) {
   return (
-    <div className="space-y-6">
+    <SectionCard id="content" title="주 컨텐츠" description="직업과 즐기는 컨텐츠를 알려주세요">
       <ContentBlock prefix="my" data={data} onChange={onChange} />
 
-      <div className="space-y-2">
-        <label className="flex items-center gap-3 text-[var(--color-gold)] font-semibold cursor-pointer">
-          <input type="checkbox" checked={data.you_contents_enabled === 1}
-            onChange={e => onChange({ you_contents_enabled: e.target.checked ? 1 : 0 })}
-            className="w-4 h-4 accent-[var(--color-gold)]" />
-          상대방 콘텐츠 성향 설정하기
-        </label>
-      </div>
+      <label className="flex items-center gap-3 pt-2 cursor-pointer">
+        <input
+          type="checkbox"
+          checked={data.you_contents_enabled === 1}
+          onChange={e => onChange({ you_contents_enabled: e.target.checked ? 1 : 0 })}
+          className="w-4 h-4 accent-[var(--color-gold)]"
+        />
+        <span className="text-[var(--color-gold)] font-semibold text-sm">상대방 컨텐츠 선호도 지정</span>
+      </label>
 
       {data.you_contents_enabled === 1 && (
-        <ContentBlock prefix="you" data={data} onChange={onChange} />
+        <div className="pt-2 border-t border-[var(--color-gold)]/15">
+          <ContentBlock prefix="you" data={data} onChange={onChange} />
+        </div>
       )}
-    </div>
+    </SectionCard>
   )
 }

@@ -11,44 +11,44 @@ export function getScoreTier(score: number): ScoreTier {
     return {
       label: '운명의 상대',
       sublabel: '영원의 서약, 바로 그 인연입니다',
-      color: 'text-[var(--color-gold-light)]',
-      ringColor: 'stroke-[var(--color-gold-light)]',
-      glow: '0 0 40px rgba(240,208,96,0.65)',
+      color: 'text-violet-600',
+      ringColor: 'stroke-violet-600',
+      glow: '0 0 40px rgba(124,58,237,0.45)',
     }
   }
   if (score >= 70) {
     return {
       label: '완벽한 파트너',
       sublabel: '서로를 완성하는 궁합입니다',
-      color: 'text-[var(--color-gold)]',
-      ringColor: 'stroke-[var(--color-gold)]',
-      glow: '0 0 30px rgba(212,175,55,0.5)',
+      color: 'text-violet-500',
+      ringColor: 'stroke-violet-500',
+      glow: '0 0 30px rgba(139,92,246,0.4)',
     }
   }
   if (score >= 50) {
     return {
       label: '좋은 인연',
       sublabel: '마음을 나눌 수 있는 관계입니다',
-      color: 'text-yellow-300',
-      ringColor: 'stroke-yellow-300',
-      glow: '0 0 24px rgba(253,224,71,0.4)',
+      color: 'text-sky-600',
+      ringColor: 'stroke-sky-600',
+      glow: '0 0 24px rgba(2,132,199,0.3)',
     }
   }
   if (score >= 30) {
     return {
       label: '노력해볼 만한',
       sublabel: '서로를 알아가면 달라질 수 있어요',
-      color: 'text-orange-400',
-      ringColor: 'stroke-orange-400',
-      glow: '0 0 20px rgba(251,146,60,0.35)',
+      color: 'text-orange-500',
+      ringColor: 'stroke-orange-500',
+      glow: '0 0 20px rgba(249,115,22,0.3)',
     }
   }
   return {
     label: '도전 과제',
     sublabel: '쉽지 않은 길이지만 불가능은 아닙니다',
-    color: 'text-rose-400',
-    ringColor: 'stroke-rose-400',
-    glow: '0 0 20px rgba(251,113,133,0.3)',
+    color: 'text-rose-600',
+    ringColor: 'stroke-rose-600',
+    glow: '0 0 20px rgba(225,29,72,0.3)',
   }
 }
 
