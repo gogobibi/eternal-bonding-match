@@ -12,7 +12,7 @@ export default function Section5ServerPlan({
   onChange: (u: Partial<ProfileInput>) => void
 }) {
   return (
-    <SectionCard id="server" title="서버·언약 플랜" description="O 가능 · X 불가 · △ 협의">
+    <SectionCard id="server" title="서버·언약 플랜">
       <Field label="서버 이동">
         <OXTriState
           value={data.server_move}

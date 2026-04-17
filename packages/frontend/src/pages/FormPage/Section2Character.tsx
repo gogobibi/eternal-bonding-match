@@ -28,7 +28,7 @@ function setPriority(coupling: CouplingType, priority: number, current: Coupling
   return result
 }
 
-function normalizeMeRace(value: ProfileInput['me_race']): RaceSelection {
+function normalizeRace(value: ProfileInput['me_race']): RaceSelection {
   if (!value) return { fantasia: null, races: [] }
   if (Array.isArray(value)) return { fantasia: null, races: value }
   return value
@@ -41,16 +41,19 @@ export default function Section2Character({
   onChange: (u: Partial<ProfileInput>) => void
 }) {
   const priorities = data.coupling_priority ?? [[], [], []]
-  const meRace = normalizeMeRace(data.me_race)
-  const youRaces = data.you_race ?? []
+  const meRace = normalizeRace(data.me_race)
+  const youRace = normalizeRace(data.you_race)
 
   const setMeRace = (patch: Partial<RaceSelection>) => {
     onChange({ me_race: { ...meRace, ...patch } })
   }
+  const setYouRace = (patch: Partial<RaceSelection>) => {
+    onChange({ you_race: { ...youRace, ...patch } })
+  }
 
   return (
-    <SectionCard id="character" title="커마·커플링" description="외형 성향과 커플링 선호도">
-      <Field label="커플링 선호 우선순위" hint="BL/GL/HL 각각 1~3순위를 골라주세요">
+    <SectionCard id="character" title="커마·커플링">
+      <Field label="커플링 선호 우선순위">
         <div className="space-y-2">
           {COUPLINGS.map(ct => {
             const currentPri = getPriority(ct, priorities)
@@ -79,35 +82,48 @@ export default function Section2Character({
         </div>
       </Field>
 
-      <div className="space-y-4 pt-2">
-        <p className="text-slate-500 text-xs tracking-wider uppercase">ME · 종족</p>
-        <Field label="환상약 사용" hint="외형을 환상약으로 변경한 상태인지 여부">
-          <RadioGroup
-            options={FANTASIA}
-            value={meRace.fantasia ?? undefined}
-            onChange={v => setMeRace({ fantasia: v as FantasiaType })}
-          />
-        </Field>
-        <Field label="종족 선택">
-          <ChipMultiSelect
-            options={RACES}
-            value={meRace.races}
-            onChange={v => setMeRace({ races: v as RaceType[] })}
-            size="sm"
-          />
-        </Field>
-      </div>
+      <div className="grid md:grid-cols-2 gap-6 pt-2">
+        <div className="space-y-4">
+          <h3 className="text-[var(--color-primary)] font-bold text-sm tracking-[0.3em] uppercase border-b border-[var(--color-border)] pb-2">
+            ME
+          </h3>
+          <Field label="환상약 사용">
+            <RadioGroup
+              options={FANTASIA}
+              value={meRace.fantasia ?? undefined}
+              onChange={v => setMeRace({ fantasia: v as FantasiaType })}
+            />
+          </Field>
+          <Field label="종족">
+            <ChipMultiSelect
+              options={RACES}
+              value={meRace.races}
+              onChange={v => setMeRace({ races: v as RaceType[] })}
+              size="sm"
+            />
+          </Field>
+        </div>
 
-      <div className="space-y-4 pt-2">
-        <p className="text-slate-500 text-xs tracking-wider uppercase">YOU · 종족</p>
-        <Field label="선호 종족">
-          <ChipMultiSelect
-            options={RACES}
-            value={youRaces}
-            onChange={v => onChange({ you_race: v as RaceType[] })}
-            size="sm"
-          />
-        </Field>
+        <div className="space-y-4">
+          <h3 className="text-[var(--color-primary)] font-bold text-sm tracking-[0.3em] uppercase border-b border-[var(--color-border)] pb-2">
+            YOU
+          </h3>
+          <Field label="환상약 사용">
+            <RadioGroup
+              options={FANTASIA}
+              value={youRace.fantasia ?? undefined}
+              onChange={v => setYouRace({ fantasia: v as FantasiaType })}
+            />
+          </Field>
+          <Field label="선호 종족">
+            <ChipMultiSelect
+              options={RACES}
+              value={youRace.races}
+              onChange={v => setYouRace({ races: v as RaceType[] })}
+              size="sm"
+            />
+          </Field>
+        </div>
       </div>
     </SectionCard>
   )

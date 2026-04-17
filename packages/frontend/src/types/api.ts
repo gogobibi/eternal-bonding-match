@@ -52,7 +52,7 @@ export interface ProfileRow {
   you_weekend: string[];
   coupling_priority: CouplingType[][];
   me_race: RaceSelection | RaceType[];
-  you_race: RaceType[];
+  you_race: RaceSelection | RaceType[];
   my_jobs: JobType[];
   my_selected: string[];
   my_custom: KeywordItem[];

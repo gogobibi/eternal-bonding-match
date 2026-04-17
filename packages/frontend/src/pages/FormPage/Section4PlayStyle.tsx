@@ -9,11 +9,7 @@ export default function Section4PlayStyle({
   onChange: (u: Partial<ProfileInput>) => void
 }) {
   return (
-    <SectionCard
-      id="playstyle"
-      title="플레이·교류 스타일"
-      description="별 아이콘으로 강조 표시할 수 있어요"
-    >
+    <SectionCard id="playstyle" title="플레이·교류 스타일">
       <EditableKeywordList
         items={data.play_styles ?? []}
         onChange={items => onChange({ play_styles: items })}

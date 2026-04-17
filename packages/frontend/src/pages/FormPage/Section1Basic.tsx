@@ -85,28 +85,28 @@ function TimeBlock({
   anyValue?: boolean
   onAnyChange?: (v: boolean) => void
 }) {
-  const toggleAny = onAnyChange
-    ? (
-      <button
-        type="button"
-        onClick={() => onAnyChange(!anyValue)}
-        className={`text-xs px-3 py-1 rounded-full border transition-colors ${
-          anyValue
-            ? 'bg-[var(--color-gold)] text-[var(--color-navy)] border-[var(--color-gold)]'
-            : 'border-[var(--color-border-strong)] text-slate-700 hover:border-[var(--color-primary)] hover:text-[var(--color-primary)]'
-        }`}
-      >
-        무관
-      </button>
-    )
-    : undefined
-
   return (
-    <Field label={label} trailing={toggleAny}>
+    <div className="space-y-1.5">
+      <div className="flex items-center justify-between gap-2">
+        <span className="text-slate-600 text-xs font-medium">{label}</span>
+        {onAnyChange && (
+          <button
+            type="button"
+            onClick={() => onAnyChange(!anyValue)}
+            className={`text-[10px] px-2 py-0.5 rounded-full border transition-colors ${
+              anyValue
+                ? 'bg-[var(--color-gold)] text-[var(--color-navy)] border-[var(--color-gold)]'
+                : 'border-[var(--color-border-strong)] text-slate-700 hover:border-[var(--color-primary)] hover:text-[var(--color-primary)]'
+            }`}
+          >
+            무관
+          </button>
+        )}
+      </div>
       {!anyValue && (
         <ChipMultiSelect options={TIMES} value={value} onChange={onChange} size="sm" />
       )}
-    </Field>
+    </div>
   )
 }
 
@@ -146,11 +146,12 @@ export default function Section1Basic({ data, onChange }: Props) {
             onChange={onChange}
           />
           <AgeBlock label="나이대" value={data.me_age} onChange={v => onChange({ me_age: v })} />
-          <div className="space-y-3">
-            <p className="text-slate-500 text-xs tracking-wider uppercase">접속 시간</p>
-            <TimeBlock label="평일" value={data.me_weekday} onChange={v => onChange({ me_weekday: v })} />
-            <TimeBlock label="주말" value={data.me_weekend} onChange={v => onChange({ me_weekend: v })} />
-          </div>
+          <Field label="접속 시간">
+            <div className="space-y-3">
+              <TimeBlock label="평일" value={data.me_weekday} onChange={v => onChange({ me_weekday: v })} />
+              <TimeBlock label="주말" value={data.me_weekend} onChange={v => onChange({ me_weekend: v })} />
+            </div>
+          </Field>
         </div>
 
         <div className="space-y-5">
@@ -166,23 +167,24 @@ export default function Section1Basic({ data, onChange }: Props) {
             onChange={onChange}
           />
           <AgeBlock label="나이대" value={data.you_age} onChange={v => onChange({ you_age: v })} />
-          <div className="space-y-3">
-            <p className="text-slate-500 text-xs tracking-wider uppercase">접속 시간</p>
-            <TimeBlock
-              label="평일"
-              value={data.you_weekday}
-              onChange={v => onChange({ you_weekday: v })}
-              anyValue={data.you_weekday_any === 1}
-              onAnyChange={v => onChange({ you_weekday_any: v ? 1 : 0 })}
-            />
-            <TimeBlock
-              label="주말"
-              value={data.you_weekend}
-              onChange={v => onChange({ you_weekend: v })}
-              anyValue={data.you_weekend_any === 1}
-              onAnyChange={v => onChange({ you_weekend_any: v ? 1 : 0 })}
-            />
-          </div>
+          <Field label="접속 시간">
+            <div className="space-y-3">
+              <TimeBlock
+                label="평일"
+                value={data.you_weekday}
+                onChange={v => onChange({ you_weekday: v })}
+                anyValue={data.you_weekday_any === 1}
+                onAnyChange={v => onChange({ you_weekday_any: v ? 1 : 0 })}
+              />
+              <TimeBlock
+                label="주말"
+                value={data.you_weekend}
+                onChange={v => onChange({ you_weekend: v })}
+                anyValue={data.you_weekend_any === 1}
+                onAnyChange={v => onChange({ you_weekend_any: v ? 1 : 0 })}
+              />
+            </div>
+          </Field>
         </div>
       </div>
     </SectionCard>

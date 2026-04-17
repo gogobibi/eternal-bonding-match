@@ -43,13 +43,16 @@ function ContentBlock({
     onChange({ [selectedKey]: selected.includes(p) ? selected.filter(s => s !== p) : [...selected, p] })
   }
 
+  const jobLabel = prefix === 'my' ? '주 직업' : '선호 직업'
+  const contentLabel = prefix === 'my' ? '즐기는 컨텐츠' : '함께 즐기고 싶은 컨텐츠'
+
   return (
     <div className="space-y-5">
-      <Field label={prefix === 'my' ? 'ME · 주 직업' : 'YOU · 선호 직업'}>
+      <Field label={jobLabel}>
         <div className="space-y-3">
           {(Object.entries(JOB_GROUPS) as [string, readonly string[]][]).map(([group, list]) => (
             <div key={group} className="space-y-1.5">
-              <span className="text-slate-500 text-xs tracking-wider uppercase">{group}</span>
+              <span className="text-slate-600 text-xs font-medium">{group}</span>
               <div className="flex flex-wrap gap-1.5">
                 {list.map(job => (
                   <Chip
@@ -65,11 +68,11 @@ function ContentBlock({
         </div>
       </Field>
 
-      <Field label={prefix === 'my' ? 'ME · 즐기는 컨텐츠' : 'YOU · 함께 즐기고 싶은 컨텐츠'}>
+      <Field label={contentLabel}>
         <div className="space-y-3">
           {(Object.entries(CONTENT_GROUPS) as [string, readonly string[]][]).map(([group, list]) => (
             <div key={group} className="space-y-1.5">
-              <span className="text-slate-500 text-xs tracking-wider uppercase">{group}</span>
+              <span className="text-slate-600 text-xs font-medium">{group}</span>
               <div className="flex flex-wrap gap-1.5">
                 {list.map(item => (
                   <Chip
@@ -85,7 +88,7 @@ function ContentBlock({
         </div>
       </Field>
 
-      <Field label="키워드 추가" hint="프리셋에 없는 컨텐츠를 자유롭게 입력">
+      <Field label="키워드 추가">
         <EditableKeywordList items={custom} onChange={items => onChange({ [customKey]: items })} />
       </Field>
     </div>
@@ -98,22 +101,32 @@ export default function Section3Content({
   data: ProfileInput
   onChange: (u: Partial<ProfileInput>) => void
 }) {
-  return (
-    <SectionCard id="content" title="주 컨텐츠" description="직업과 즐기는 컨텐츠를 알려주세요">
-      <ContentBlock prefix="my" data={data} onChange={onChange} />
+  const youEnabled = data.you_contents_enabled === 1
 
-      <label className="flex items-center gap-3 pt-2 cursor-pointer">
+  return (
+    <SectionCard id="content" title="주 컨텐츠">
+      <div className="space-y-3">
+        <h3 className="text-[var(--color-primary)] font-bold text-sm tracking-[0.3em] uppercase border-b border-[var(--color-border)] pb-2">
+          ME
+        </h3>
+        <ContentBlock prefix="my" data={data} onChange={onChange} />
+      </div>
+
+      <label className="flex items-center gap-2 pt-2 cursor-pointer">
         <input
           type="checkbox"
-          checked={data.you_contents_enabled === 1}
+          checked={youEnabled}
           onChange={e => onChange({ you_contents_enabled: e.target.checked ? 1 : 0 })}
-          className="w-4 h-4 accent-[var(--color-gold)]"
+          className="w-4 h-4 accent-[var(--color-primary)]"
         />
-        <span className="text-[var(--color-gold)] font-semibold text-sm">상대방 컨텐츠 선호도 지정</span>
+        <span className="text-slate-700 text-sm">상대 선호도 설정</span>
       </label>
 
-      {data.you_contents_enabled === 1 && (
-        <div className="pt-2 border-t border-[var(--color-gold)]/15">
+      {youEnabled && (
+        <div className="space-y-3">
+          <h3 className="text-[var(--color-primary)] font-bold text-sm tracking-[0.3em] uppercase border-b border-[var(--color-border)] pb-2">
+            YOU
+          </h3>
           <ContentBlock prefix="you" data={data} onChange={onChange} />
         </div>
       )}

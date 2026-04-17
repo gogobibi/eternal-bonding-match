@@ -9,11 +9,7 @@ export default function Section6Extra({
   onChange: (u: Partial<ProfileInput>) => void
 }) {
   return (
-    <SectionCard
-      id="extra"
-      title="그 외"
-      description="자유롭게 하고 싶은 말을 적어주세요"
-    >
+    <SectionCard id="extra" title="그 외">
       <EditableKeywordList
         items={data.extra_items ?? []}
         onChange={items => onChange({ extra_items: items })}
