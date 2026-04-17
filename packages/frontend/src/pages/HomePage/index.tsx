@@ -1,10 +1,30 @@
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { pruneExpired } from '../../lib/myLinks'
+import MyLinksPanel from './MyLinksPanel'
 
 export default function HomePage() {
   const navigate = useNavigate()
+  const [panelOpen, setPanelOpen] = useState(false)
+
+  useEffect(() => {
+    pruneExpired()
+  }, [])
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
+    <div className="min-h-screen flex items-center justify-center p-4 relative">
+      <button
+        type="button"
+        onClick={() => setPanelOpen(true)}
+        aria-label="내 링크 관리"
+        className="absolute top-4 right-4 p-2 rounded-full text-slate-500 hover:text-[var(--color-gold)] hover:bg-[var(--color-surface)] transition-colors"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="12" cy="12" r="3" />
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+        </svg>
+      </button>
+
       <div className="w-full max-w-xl space-y-10">
         <div className="text-center space-y-3">
           <p className="text-slate-500 text-xs tracking-[0.4em] uppercase">Eternal Bonding Match</p>
@@ -38,6 +58,8 @@ export default function HomePage() {
           </p>
         </div>
       </div>
+
+      <MyLinksPanel open={panelOpen} onClose={() => setPanelOpen(false)} />
     </div>
   )
 }

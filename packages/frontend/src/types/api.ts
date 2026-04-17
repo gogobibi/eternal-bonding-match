@@ -80,6 +80,7 @@ export interface CreateProfileResponse {
 
 export interface CreateLinkRequest {
   profile_id: string;
+  password?: string;
 }
 
 export interface CreateLinkResponse {
