@@ -13,3 +13,6 @@ database_id = "b89e455b-2b00-4e16-aa16-61958a69b38f"
 
 # Claude API Key는 wrangler secret으로 관리
 # wrangler secret put ANTHROPIC_API_KEY
+
+[triggers]
+crons = ["0 3 * * *"]
