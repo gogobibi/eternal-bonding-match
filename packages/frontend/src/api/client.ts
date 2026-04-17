@@ -2,11 +2,18 @@ import type { CreateProfileRequest, CreateProfileResponse, CreateLinkResponse, G
 
 const BASE = '/api'
 
+export const EXPIRED_LINK_MESSAGE = '만료되었거나 삭제된 링크입니다.'
+
+function mapErrorMessage(status: number, fallback: string): string {
+  if (status === 410) return EXPIRED_LINK_MESSAGE
+  return fallback
+}
+
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
   const res = await fetch(BASE + path, options)
   if (!res.ok) {
     const body = await res.json().catch(() => ({ error: res.statusText }))
-    throw new Error(body.error ?? res.statusText)
+    throw new Error(mapErrorMessage(res.status, body.error ?? res.statusText))
   }
   return res.json()
 }
@@ -15,8 +22,27 @@ export function postProfile(data: CreateProfileRequest): Promise<CreateProfileRe
   return request('/profiles', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) })
 }
 
-export function postLink(profileId: string): Promise<CreateLinkResponse> {
-  return request('/links', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ profile_id: profileId }) })
+export function postLink(profileId: string, password?: string): Promise<CreateLinkResponse> {
+  const body: { profile_id: string; password?: string } = { profile_id: profileId }
+  if (password) body.password = password
+  return request('/links', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+}
+
+export type DeleteLinkResult =
+  | { ok: true }
+  | { ok: false; error: 'invalid_password' | 'password_not_set' }
+
+export async function deleteLink(linkId: string, password: string): Promise<DeleteLinkResult> {
+  const res = await fetch(`${BASE}/links/${linkId}`, {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ password }),
+  })
+  if (res.status === 204) return { ok: true }
+  if (res.status === 403) return { ok: false, error: 'invalid_password' }
+  if (res.status === 409) return { ok: false, error: 'password_not_set' }
+  const body = await res.json().catch(() => ({ error: res.statusText }))
+  throw new Error(mapErrorMessage(res.status, body.error ?? res.statusText))
 }
 
 export function getLink(linkId: string): Promise<GetLinkResponse> {
