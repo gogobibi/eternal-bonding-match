@@ -74,6 +74,9 @@ export default function ResultPage() {
     )
   }
 
+  const nameA = result.profile_a_nickname ?? '?'
+  const nameB = result.profile_b_nickname ?? '?'
+
   return (
     <div className="min-h-screen py-10 px-4">
       <div
@@ -84,7 +87,7 @@ export default function ResultPage() {
           <p className="text-slate-500 text-xs tracking-[0.3em] uppercase">Eternal Bonding · Result</p>
           <h1 className="text-2xl sm:text-3xl font-bold text-[var(--color-gold)] tracking-wide"
               style={{ textShadow: '0 0 24px rgba(124,58,237,0.2)' }}>
-            매칭 결과
+            {nameA}님과 {nameB}님의 매칭률!
           </h1>
         </header>
 

@@ -55,7 +55,7 @@ export default function FormPage() {
               style={{ textShadow: '0 0 24px rgba(124,58,237,0.2)' }}>
             프로필 작성
           </h1>
-          <p className="text-slate-500 text-xs">필수 항목은 닉네임과 서버뿐. 나머지는 자유롭게 채워주세요.</p>
+          <p className="text-slate-500 text-xs">필수 항목은 링크 닉네임과 서버뿐. 나머지는 자유롭게 채워주세요.</p>
         </header>
 
         <TopChipNav sections={SECTIONS} />

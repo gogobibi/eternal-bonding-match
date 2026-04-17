@@ -112,11 +112,11 @@ function TimeBlock({
 
 export default function Section1Basic({ data, onChange }: Props) {
   return (
-    <SectionCard id="basic" title="기본 정보" description="닉네임과 서버는 필수입니다">
-      <Field label="닉네임 (최대 9자)">
+    <SectionCard id="basic" title="기본 정보">
+      <Field label="*닉네임 (최대 9자)">
         <input
           type="text"
-          placeholder="인게임 닉네임"
+          placeholder="인게임 닉네임이 아니어도 무방합니다. 매칭 결과에서 표시됩니다"
           maxLength={9}
           value={data.nickname ?? ''}
           onChange={e => onChange({ nickname: e.target.value })}
@@ -124,7 +124,7 @@ export default function Section1Basic({ data, onChange }: Props) {
         />
       </Field>
 
-      <Field label="서버">
+      <Field label="*서버">
         <RadioGroup
           options={SERVERS}
           value={data.server}
@@ -132,55 +132,57 @@ export default function Section1Basic({ data, onChange }: Props) {
         />
       </Field>
 
-      <div className="grid md:grid-cols-2 gap-5">
-        <GenderBlock
-          label="ME · 성별"
-          options={GENDERS_ME}
-          genderKey="me_gender"
-          customKey="me_gender_custom"
-          data={data}
-          onChange={onChange}
-        />
-        <GenderBlock
-          label="YOU · 성별"
-          options={GENDERS_YOU}
-          genderKey="you_gender"
-          customKey="you_gender_custom"
-          data={data}
-          onChange={onChange}
-        />
-      </div>
-
-      <div className="grid md:grid-cols-2 gap-5">
-        <AgeBlock label="ME · 나이대" value={data.me_age} onChange={v => onChange({ me_age: v })} />
-        <AgeBlock label="YOU · 나이대" value={data.you_age} onChange={v => onChange({ you_age: v })} />
-      </div>
-
-      <div className="space-y-4">
-        <p className="text-slate-500 text-xs tracking-wider uppercase">ME · 접속 시간</p>
-        <div className="grid md:grid-cols-2 gap-5">
-          <TimeBlock label="평일" value={data.me_weekday} onChange={v => onChange({ me_weekday: v })} />
-          <TimeBlock label="주말" value={data.me_weekend} onChange={v => onChange({ me_weekend: v })} />
+      <div className="grid md:grid-cols-2 gap-6 pt-2">
+        <div className="space-y-5">
+          <h3 className="text-[var(--color-primary)] font-bold text-sm tracking-[0.3em] uppercase border-b border-[var(--color-border)] pb-2">
+            ME
+          </h3>
+          <GenderBlock
+            label="성별"
+            options={GENDERS_ME}
+            genderKey="me_gender"
+            customKey="me_gender_custom"
+            data={data}
+            onChange={onChange}
+          />
+          <AgeBlock label="나이대" value={data.me_age} onChange={v => onChange({ me_age: v })} />
+          <div className="space-y-3">
+            <p className="text-slate-500 text-xs tracking-wider uppercase">접속 시간</p>
+            <TimeBlock label="평일" value={data.me_weekday} onChange={v => onChange({ me_weekday: v })} />
+            <TimeBlock label="주말" value={data.me_weekend} onChange={v => onChange({ me_weekend: v })} />
+          </div>
         </div>
-      </div>
 
-      <div className="space-y-4">
-        <p className="text-slate-500 text-xs tracking-wider uppercase">YOU · 접속 시간</p>
-        <div className="grid md:grid-cols-2 gap-5">
-          <TimeBlock
-            label="평일"
-            value={data.you_weekday}
-            onChange={v => onChange({ you_weekday: v })}
-            anyValue={data.you_weekday_any === 1}
-            onAnyChange={v => onChange({ you_weekday_any: v ? 1 : 0 })}
+        <div className="space-y-5">
+          <h3 className="text-[var(--color-primary)] font-bold text-sm tracking-[0.3em] uppercase border-b border-[var(--color-border)] pb-2">
+            YOU
+          </h3>
+          <GenderBlock
+            label="성별"
+            options={GENDERS_YOU}
+            genderKey="you_gender"
+            customKey="you_gender_custom"
+            data={data}
+            onChange={onChange}
           />
-          <TimeBlock
-            label="주말"
-            value={data.you_weekend}
-            onChange={v => onChange({ you_weekend: v })}
-            anyValue={data.you_weekend_any === 1}
-            onAnyChange={v => onChange({ you_weekend_any: v ? 1 : 0 })}
-          />
+          <AgeBlock label="나이대" value={data.you_age} onChange={v => onChange({ you_age: v })} />
+          <div className="space-y-3">
+            <p className="text-slate-500 text-xs tracking-wider uppercase">접속 시간</p>
+            <TimeBlock
+              label="평일"
+              value={data.you_weekday}
+              onChange={v => onChange({ you_weekday: v })}
+              anyValue={data.you_weekday_any === 1}
+              onAnyChange={v => onChange({ you_weekday_any: v ? 1 : 0 })}
+            />
+            <TimeBlock
+              label="주말"
+              value={data.you_weekend}
+              onChange={v => onChange({ you_weekend: v })}
+              anyValue={data.you_weekend_any === 1}
+              onAnyChange={v => onChange({ you_weekend_any: v ? 1 : 0 })}
+            />
+          </div>
         </div>
       </div>
     </SectionCard>
