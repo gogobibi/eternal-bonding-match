@@ -60,11 +60,12 @@ matchRouter.post('/', async (c) => {
     const parsedA = parseJsonColumns(profileA)
     const parsedB = parseJsonColumns(profileB)
 
-    let matchResult = { score: 0, analysis: '분석에 실패했습니다. 다시 시도해주세요.', comment: '오류 발생' }
+    let matchResult
     try {
       matchResult = await analyzeMatch(parsedA, parsedB, c.env.ANTHROPIC_API_KEY)
     } catch (e) {
       console.error('AI matching failed:', e)
+      return c.json({ error: 'AI 분석에 실패했습니다. 다시 시도해주세요.' }, 502)
     }
 
     const matchId = crypto.randomUUID()
