@@ -9,7 +9,7 @@ ENVIRONMENT = "development"
 [[d1_databases]]
 binding = "DB"
 database_name = "eternal-bonding-db"
-database_id = "TO_BE_SET_AFTER_CREATION"
+database_id = "b89e455b-2b00-4e16-aa16-61958a69b38f"
 
 # Claude API Key는 wrangler secret으로 관리
 # wrangler secret put ANTHROPIC_API_KEY

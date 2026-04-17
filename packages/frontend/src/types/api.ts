@@ -1,45 +1,23 @@
-// ── Enum-like unions ──
+// ── Enum-like unions (single source of truth: constants/options.ts) ──
 
-export type ServerType = '카벙클' | '펜리르' | '초코보' | '모그리' | '톤베리';
-
-export type CouplingType = 'BL' | 'GL' | 'HL';
-
-export type RaceType =
-  | '휴란'
-  | '엘레젠'
-  | '라라펠'
-  | '미코테'
-  | '루가딘'
-  | '아우라'
-  | '흐로스가르'
-  | '비에라';
-
-export type JobType =
-  // Tank
-  | '나이트'
-  | '전사'
-  | '암흑기사'
-  | '건브레이커'
-  // Healer
-  | '백마도사'
-  | '학자'
-  | '점성술사'
-  | '현자'
-  // DPS Melee
-  | '몽크'
-  | '용기사'
-  | '닌자'
-  | '사무라이'
-  | '파무어'
-  // DPS Ranged
-  | '음유시인'
-  | '기공사'
-  | '무도가'
-  // DPS Magic
-  | '흑마도사'
-  | '소환사'
-  | '적마도사'
-  | '픽토맨서';
+export type {
+  ServerType,
+  CouplingType,
+  RaceType,
+  JobType,
+  FantasiaType,
+  OxTri,
+  PlanType,
+} from '../constants/options';
+import type {
+  RaceType,
+  CouplingType,
+  JobType,
+  FantasiaType,
+  OxTri,
+  PlanType,
+  ServerType,
+} from '../constants/options';
 
 // ── JSON column item types ──
 
@@ -50,6 +28,11 @@ export interface KeywordItem {
 }
 
 // ── Profile types ──
+
+export interface RaceSelection {
+  fantasia: FantasiaType | null;
+  races: RaceType[];
+}
 
 export interface ProfileRow {
   profile_id: string;
@@ -68,8 +51,8 @@ export interface ProfileRow {
   you_weekend_any: number;
   you_weekend: string[];
   coupling_priority: CouplingType[][];
-  me_race: RaceType[];
-  you_race: RaceType[];
+  me_race: RaceSelection | RaceType[];
+  you_race: RaceSelection | RaceType[];
   my_jobs: JobType[];
   my_selected: string[];
   my_custom: KeywordItem[];
@@ -78,9 +61,9 @@ export interface ProfileRow {
   you_selected: string[];
   you_custom: KeywordItem[];
   play_styles: KeywordItem[];
-  server_move: 'O' | 'X' | '△';
-  server_cross: 'O' | 'X' | '△';
-  covenant_plan: '스탠다드' | '골드' | '플래티넘' | '무관';
+  server_move: OxTri;
+  server_cross: OxTri;
+  covenant_plan: PlanType;
   extra_items: KeywordItem[];
   created_at: string;
 }
@@ -126,4 +109,8 @@ export interface GetMatchResponse {
   analysis: string | null;
   comment: string | null;
   created_at: string;
+  profile_a_nickname?: string | null;
+  profile_a_server?: ServerType | null;
+  profile_b_nickname?: string | null;
+  profile_b_server?: ServerType | null;
 }

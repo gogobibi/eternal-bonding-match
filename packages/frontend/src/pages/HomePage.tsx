@@ -5,20 +5,37 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="text-center space-y-8 max-w-lg">
-        <h1 className="text-4xl sm:text-5xl font-bold text-[var(--color-gold)] tracking-wide" style={{ textShadow: '0 0 30px rgba(212,175,55,0.3)' }}>
-          이터널 본딩 매칭
-        </h1>
-        <p className="text-slate-300 text-lg">당신의 이상형과의 연연 궁합을 확인하세요</p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <button onClick={() => navigate('/form')}
-            className="px-8 py-3 rounded-lg bg-[var(--color-gold)] text-[var(--color-navy)] font-semibold text-lg hover:bg-[var(--color-gold-light)] transition-colors">
-            내 프로필 작성하기
+      <div className="w-full max-w-xl space-y-10">
+        <div className="text-center space-y-3">
+          <p className="text-slate-500 text-xs tracking-[0.4em] uppercase">Eternal Bonding Match</p>
+          <h1
+            className="text-4xl sm:text-5xl font-bold text-[var(--color-gold)] tracking-wide"
+            style={{ textShadow: '0 0 30px rgba(124,58,237,0.2)' }}
+          >
+            이터널 본딩 매칭 시트
+          </h1>
+          <p className="text-slate-700 text-base leading-relaxed">
+            서로의 플레이 성향·컨텐츠·커플링 선호를 기록하고<br />
+            AI가 두 프로필의 궁합을 분석해줍니다.
+          </p>
+        </div>
+
+        <div className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl p-6 space-y-3 shadow-sm">
+          <button
+            onClick={() => navigate('/form')}
+            className="w-full py-3 rounded-lg bg-[var(--color-gold)] text-[var(--color-navy)] font-bold text-base hover:bg-[var(--color-gold-light)] transition-colors"
+          >
+            내 시트 작성하기
           </button>
-          <button onClick={() => navigate('/match')}
-            className="px-8 py-3 rounded-lg border-2 border-[var(--color-gold)] text-[var(--color-gold)] font-semibold text-lg hover:bg-[var(--color-gold)] hover:text-[var(--color-navy)] transition-colors">
-            매칭 확인하기
+          <button
+            onClick={() => navigate('/match')}
+            className="w-full py-3 rounded-lg border border-[var(--color-gold)]/60 text-[var(--color-gold)] font-bold text-base hover:bg-[var(--color-gold)]/10 transition-colors"
+          >
+            매칭 결과 확인하기
           </button>
+          <p className="text-slate-400 text-xs text-center pt-2">
+            작성된 시트는 공유 링크로 전달되어 상대와 매칭할 수 있어요
+          </p>
         </div>
       </div>
     </div>

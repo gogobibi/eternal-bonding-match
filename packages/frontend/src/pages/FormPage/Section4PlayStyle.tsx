@@ -1,15 +1,20 @@
-import type { ProfileInput } from '../../types/api'
+import SectionCard from '../../components/form/SectionCard'
 import EditableKeywordList from './EditableKeywordList'
+import type { ProfileInput } from '../../types/api'
 
-export default function Section4PlayStyle({ data, onChange }: { data: ProfileInput; onChange: (u: Partial<ProfileInput>) => void }) {
+export default function Section4PlayStyle({
+  data, onChange,
+}: {
+  data: ProfileInput
+  onChange: (u: Partial<ProfileInput>) => void
+}) {
   return (
-    <div className="space-y-4">
-      <h3 className="text-[var(--color-gold)] font-semibold">플레이 스타일</h3>
+    <SectionCard id="playstyle" title="플레이·교류 스타일">
       <EditableKeywordList
         items={data.play_styles ?? []}
         onChange={items => onChange({ play_styles: items })}
         placeholder="플레이 스타일을 입력해 주세요"
       />
-    </div>
+    </SectionCard>
   )
 }

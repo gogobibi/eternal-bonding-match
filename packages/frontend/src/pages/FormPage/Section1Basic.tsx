@@ -1,130 +1,192 @@
+import SectionCard from '../../components/form/SectionCard'
+import Field from '../../components/form/Field'
+import RadioGroup from '../../components/form/RadioGroup'
+import ChipMultiSelect from '../../components/form/ChipMultiSelect'
+import {
+  SERVERS, GENDERS_ME, GENDERS_YOU,
+  AGE_CLASS, AGE_DECADES, TIMES,
+  type ServerType,
+} from '../../constants/options'
 import type { ProfileInput } from '../../types/api'
 
-const SERVERS = ['카벙클', '펜리르', '초코보', '모그리', '톤베리'] as const
-const GENDERS = ['남', '여', '기타'] as const
-const AGES = ['20대', '30대', '40대 이상', '무관'] as const
-const TIMES = ['오전', '오후', '저녁', '새벽', '무관'] as const
-
-function RadioGroup({ label, options, value, onChange }: {
-  label: string
-  options: readonly string[]
-  value: string | undefined
-  onChange: (v: string) => void
-}) {
-  return (
-    <fieldset className="space-y-2">
-      <legend className="text-[var(--color-gold)] font-semibold">{label}</legend>
-      <div className="flex flex-wrap gap-2">
-        {options.map(opt => (
-          <label key={opt} className={`cursor-pointer px-4 py-2 rounded border transition-colors ${value === opt ? 'bg-[var(--color-gold)] text-[var(--color-navy)] border-[var(--color-gold)]' : 'border-[var(--color-gold)]/40 hover:border-[var(--color-gold)]'}`}>
-            <input type="radio" className="sr-only" checked={value === opt} onChange={() => onChange(opt)} />
-            {opt}
-          </label>
-        ))}
-      </div>
-    </fieldset>
-  )
+interface Props {
+  data: ProfileInput
+  onChange: (u: Partial<ProfileInput>) => void
 }
 
-function ChipMultiSelect({ label, options, value, onChange }: {
+function GenderBlock({
+  label, options, genderKey, customKey, data, onChange,
+}: {
   label: string
   options: readonly string[]
-  value: string[] | undefined
-  onChange: (v: string[]) => void
-}) {
-  const selected = value ?? []
-  const toggle = (opt: string) => {
-    onChange(selected.includes(opt) ? selected.filter(v => v !== opt) : [...selected, opt])
-  }
-  return (
-    <fieldset className="space-y-2">
-      <legend className="text-[var(--color-gold)] font-semibold">{label}</legend>
-      <div className="flex flex-wrap gap-2">
-        {options.map(opt => (
-          <button key={opt} type="button" onClick={() => toggle(opt)}
-            className={`px-4 py-2 rounded border transition-colors ${selected.includes(opt) ? 'bg-[var(--color-gold)] text-[var(--color-navy)] border-[var(--color-gold)]' : 'border-[var(--color-gold)]/40 hover:border-[var(--color-gold)]'}`}>
-            {opt}
-          </button>
-        ))}
-      </div>
-    </fieldset>
-  )
-}
-
-function GenderSelect({ label, genderKey, customKey, data, onChange }: {
-  label: string
   genderKey: 'me_gender' | 'you_gender'
   customKey: 'me_gender_custom' | 'you_gender_custom'
   data: ProfileInput
   onChange: (u: Partial<ProfileInput>) => void
 }) {
+  const current = data[genderKey]
   return (
-    <div className="space-y-2">
-      <RadioGroup label={label} options={GENDERS} value={data[genderKey]} onChange={v => onChange({ [genderKey]: v })} />
-      {data[genderKey] === '기타' && (
-        <input type="text" placeholder="성별을 입력해 주세요"
-          value={data[customKey] ?? ''}
-          onChange={e => onChange({ [customKey]: e.target.value })}
-          className="w-full px-3 py-2 rounded bg-[var(--color-navy-light)] border border-[var(--color-gold)]/40 focus:border-[var(--color-gold)] outline-none" />
-      )}
-    </div>
+    <Field label={label}>
+      <div className="space-y-2">
+        <RadioGroup
+          options={options}
+          value={current}
+          onChange={v => onChange({ [genderKey]: v } as Partial<ProfileInput>)}
+        />
+        {current === '직접기입' && (
+          <input
+            type="text"
+            placeholder="성별을 입력해 주세요"
+            value={data[customKey] ?? ''}
+            onChange={e => onChange({ [customKey]: e.target.value } as Partial<ProfileInput>)}
+            className="w-full px-3 py-2 rounded-md bg-[var(--color-navy)] border border-[var(--color-gold)]/40 focus:border-[var(--color-gold)] outline-none text-sm"
+          />
+        )}
+      </div>
+    </Field>
   )
 }
 
-function TimeSelect({ label, options, value, onChange, anyKey, anyValue, onAnyChange }: {
+function AgeBlock({
+  label, value, onChange,
+}: {
   label: string
-  options: readonly string[]
   value: string[] | undefined
   onChange: (v: string[]) => void
-  anyKey?: string
+}) {
+  const selected = value ?? []
+  const ageClass = selected.find(s => (AGE_CLASS as readonly string[]).includes(s))
+  const decades = selected.filter(s => (AGE_DECADES as readonly string[]).includes(s))
+
+  const setClass = (v: string) => {
+    const rest = selected.filter(s => !(AGE_CLASS as readonly string[]).includes(s))
+    onChange([v, ...rest])
+  }
+  const setDecades = (v: string[]) => {
+    onChange(ageClass ? [ageClass, ...v] : v)
+  }
+
+  return (
+    <Field label={label}>
+      <div className="space-y-3">
+        <RadioGroup options={AGE_CLASS} value={ageClass} onChange={setClass} />
+        <ChipMultiSelect options={AGE_DECADES} value={decades} onChange={setDecades} size="sm" />
+      </div>
+    </Field>
+  )
+}
+
+function TimeBlock({
+  label, value, onChange, anyValue, onAnyChange,
+}: {
+  label: string
+  value: string[] | undefined
+  onChange: (v: string[]) => void
   anyValue?: boolean
   onAnyChange?: (v: boolean) => void
 }) {
   return (
-    <div className="space-y-2">
-      {anyKey !== undefined && (
-        <label className="flex items-center gap-2 text-[var(--color-gold)] font-semibold">
-          {label}
-          <button type="button" onClick={() => onAnyChange?.(!anyValue)}
-            className={`ml-2 px-3 py-1 text-sm rounded border transition-colors ${anyValue ? 'bg-[var(--color-gold)] text-[var(--color-navy)] border-[var(--color-gold)]' : 'border-[var(--color-gold)]/40'}`}>
+    <div className="space-y-1.5">
+      <div className="flex items-center justify-between gap-2">
+        <span className="text-slate-600 text-xs font-medium">{label}</span>
+        {onAnyChange && (
+          <button
+            type="button"
+            onClick={() => onAnyChange(!anyValue)}
+            className={`text-[10px] px-2 py-0.5 rounded-full border transition-colors ${
+              anyValue
+                ? 'bg-[var(--color-gold)] text-[var(--color-navy)] border-[var(--color-gold)]'
+                : 'border-[var(--color-border-strong)] text-slate-700 hover:border-[var(--color-primary)] hover:text-[var(--color-primary)]'
+            }`}
+          >
             무관
           </button>
-        </label>
-      )}
+        )}
+      </div>
       {!anyValue && (
-        <ChipMultiSelect label={anyKey === undefined ? label : ''} options={options} value={value} onChange={onChange} />
+        <ChipMultiSelect options={TIMES} value={value} onChange={onChange} size="sm" />
       )}
     </div>
   )
 }
 
-export default function Section1Basic({ data, onChange }: { data: ProfileInput; onChange: (u: Partial<ProfileInput>) => void }) {
+export default function Section1Basic({ data, onChange }: Props) {
   return (
-    <div className="space-y-6">
-      <div className="space-y-2">
-        <label className="text-[var(--color-gold)] font-semibold">닉네임</label>
-        <input type="text" placeholder="인게임 닉네임"
+    <SectionCard id="basic" title="기본 정보">
+      <Field label="*닉네임 (최대 9자)">
+        <input
+          type="text"
+          placeholder="인게임 닉네임이 아니어도 무방합니다. 매칭 결과에서 표시됩니다"
+          maxLength={9}
           value={data.nickname ?? ''}
           onChange={e => onChange({ nickname: e.target.value })}
-          className="w-full px-3 py-2 rounded bg-[var(--color-navy-light)] border border-[var(--color-gold)]/40 focus:border-[var(--color-gold)] outline-none" />
+          className="w-full px-3 py-2 rounded-md bg-[var(--color-navy)] border border-[var(--color-gold)]/40 focus:border-[var(--color-gold)] outline-none text-sm"
+        />
+      </Field>
+
+      <Field label="*서버">
+        <RadioGroup
+          options={SERVERS}
+          value={data.server}
+          onChange={v => onChange({ server: v as ServerType })}
+        />
+      </Field>
+
+      <div className="grid md:grid-cols-2 gap-6 pt-2">
+        <div className="space-y-5">
+          <h3 className="text-[var(--color-primary)] font-bold text-sm tracking-[0.3em] uppercase border-b border-[var(--color-border)] pb-2">
+            ME
+          </h3>
+          <GenderBlock
+            label="성별"
+            options={GENDERS_ME}
+            genderKey="me_gender"
+            customKey="me_gender_custom"
+            data={data}
+            onChange={onChange}
+          />
+          <AgeBlock label="나이대" value={data.me_age} onChange={v => onChange({ me_age: v })} />
+          <Field label="접속 시간">
+            <div className="space-y-3">
+              <TimeBlock label="평일" value={data.me_weekday} onChange={v => onChange({ me_weekday: v })} />
+              <TimeBlock label="주말" value={data.me_weekend} onChange={v => onChange({ me_weekend: v })} />
+            </div>
+          </Field>
+        </div>
+
+        <div className="space-y-5">
+          <h3 className="text-[var(--color-primary)] font-bold text-sm tracking-[0.3em] uppercase border-b border-[var(--color-border)] pb-2">
+            YOU
+          </h3>
+          <GenderBlock
+            label="성별"
+            options={GENDERS_YOU}
+            genderKey="you_gender"
+            customKey="you_gender_custom"
+            data={data}
+            onChange={onChange}
+          />
+          <AgeBlock label="나이대" value={data.you_age} onChange={v => onChange({ you_age: v })} />
+          <Field label="접속 시간">
+            <div className="space-y-3">
+              <TimeBlock
+                label="평일"
+                value={data.you_weekday}
+                onChange={v => onChange({ you_weekday: v })}
+                anyValue={data.you_weekday_any === 1}
+                onAnyChange={v => onChange({ you_weekday_any: v ? 1 : 0 })}
+              />
+              <TimeBlock
+                label="주말"
+                value={data.you_weekend}
+                onChange={v => onChange({ you_weekend: v })}
+                anyValue={data.you_weekend_any === 1}
+                onAnyChange={v => onChange({ you_weekend_any: v ? 1 : 0 })}
+              />
+            </div>
+          </Field>
+        </div>
       </div>
-
-      <RadioGroup label="서버" options={SERVERS} value={data.server} onChange={v => onChange({ server: v as ProfileInput['server'] })} />
-
-      <GenderSelect label="내 성별" genderKey="me_gender" customKey="me_gender_custom" data={data} onChange={onChange} />
-      <GenderSelect label="원하는 상대 성별" genderKey="you_gender" customKey="you_gender_custom" data={data} onChange={onChange} />
-
-      <ChipMultiSelect label="내 나이대" options={AGES} value={data.me_age} onChange={v => onChange({ me_age: v })} />
-      <ChipMultiSelect label="원하는 나이대" options={AGES} value={data.you_age} onChange={v => onChange({ you_age: v })} />
-
-      <ChipMultiSelect label="내 활동 시간 (평일)" options={TIMES} value={data.me_weekday} onChange={v => onChange({ me_weekday: v })} />
-      <ChipMultiSelect label="내 활동 시간 (주말)" options={TIMES} value={data.me_weekend} onChange={v => onChange({ me_weekend: v })} />
-
-      <TimeSelect label="원하는 상대 활동 시간 (평일)" options={TIMES} value={data.you_weekday} onChange={v => onChange({ you_weekday: v })}
-        anyKey="you_weekday_any" anyValue={data.you_weekday_any === 1} onAnyChange={v => onChange({ you_weekday_any: v ? 1 : 0 })} />
-
-      <TimeSelect label="원하는 상대 활동 시간 (주말)" options={TIMES} value={data.you_weekend} onChange={v => onChange({ you_weekend: v })}
-        anyKey="you_weekend_any" anyValue={data.you_weekend_any === 1} onAnyChange={v => onChange({ you_weekend_any: v ? 1 : 0 })} />
-    </div>
+    </SectionCard>
   )
 }

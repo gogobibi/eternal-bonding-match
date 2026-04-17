@@ -2,13 +2,21 @@
 
 export type ServerType = '카벙클' | '펜리르' | '초코보' | '모그리' | '톤베리';
 export type CouplingType = 'BL' | 'GL' | 'HL';
+
 export type RaceType =
-  | '휴란' | '엘레젠' | '라라펠' | '미코테'
-  | '루가딘' | '아우라' | '흐로스가르' | '비에라';
+  | '남라펠' | '여라펠'
+  | '남코테' | '여코테'
+  | '남중휴' | '남고휴' | '여중휴' | '여고휴'
+  | '남레젠' | '여레젠'
+  | '남우라' | '여우라'
+  | '남비에라' | '여비에라'
+  | '남로스갈' | '여로스갈'
+  | '남루가딘' | '여루가딘';
+
 export type JobType =
   | '나이트' | '전사' | '암흑기사' | '건브레이커'
   | '백마도사' | '학자' | '점성술사' | '현자'
-  | '몽크' | '용기사' | '닌자' | '사무라이' | '파무어'
+  | '몽크' | '용기사' | '닌자' | '사무라이' | '리퍼' | '바이퍼'
   | '음유시인' | '기공사' | '무도가'
   | '흑마도사' | '소환사' | '적마도사' | '픽토맨서';
 
@@ -133,4 +141,8 @@ export interface GetMatchResponse {
   analysis: string | null;
   comment: string | null;
   created_at: string;
+  profile_a_nickname?: string | null;
+  profile_a_server?: ServerType | null;
+  profile_b_nickname?: string | null;
+  profile_b_server?: ServerType | null;
 }
